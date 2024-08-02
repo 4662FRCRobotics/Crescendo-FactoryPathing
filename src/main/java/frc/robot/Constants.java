@@ -52,6 +52,26 @@ public final class Constants {
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
 
     // SPARK MAX CAN IDs
+    public static final int kFrontLeftDrivingCanId = 6;
+    public static final int kRearLeftDrivingCanId = 2;
+    public static final int kFrontRightDrivingCanId = 8;
+    public static final int kRearRightDrivingCanId = 4;
+
+    public static final int kFrontLeftTurningCanId = 7;
+    public static final int kRearLeftTurningCanId = 3;
+    public static final int kFrontRightTurningCanId = 9;
+    public static final int kRearRightTurningCanId = 5;
+
+    /* robot map
+     *
+     *  4/5 ---R--- 2/3
+     *   |           |
+     *   R           L
+     *   |           |
+     *  8/9 ---F--- 6/7
+     */
+    
+    /* copy of comp - inverted from desired - check joystick feeds in teleop drive
     public static final int kFrontLeftDrivingCanId = 4;
     public static final int kRearLeftDrivingCanId = 8;
     public static final int kFrontRightDrivingCanId = 2;
@@ -61,6 +81,7 @@ public final class Constants {
     public static final int kRearLeftTurningCanId = 9;
     public static final int kFrontRightTurningCanId = 3;
     public static final int kRearRightTurningCanId = 7;
+    */
 
     public static final boolean kGyroReversed = false;
   }
