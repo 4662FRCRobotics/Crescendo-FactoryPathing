@@ -51,6 +51,16 @@ public final class Constants {
     public static final double kBackLeftChassisAngularOffset = Math.PI;
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
 
+    /* robot map
+     *
+     *  6/7 -front- 8/9
+     *   |           |
+     *  left       right
+     *   |           |
+     *  2/3 --rear- 4/5
+     *  
+     *    drive/turn
+     */
     // SPARK MAX CAN IDs
     public static final int kFrontLeftDrivingCanId = 6;
     public static final int kRearLeftDrivingCanId = 2;
