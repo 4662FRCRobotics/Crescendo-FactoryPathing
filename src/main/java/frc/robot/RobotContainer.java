@@ -8,10 +8,16 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.OIConstants;
+import frc.robot.libraries.ConsoleAuto;
+import frc.robot.subsystems.AutonomousSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -24,8 +30,14 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
   // The driver's controller
-  XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
+  private final ConsoleAuto m_consoleAuto =
+      new ConsoleAuto(OIConstants.kAUTONOMOUS_CONSOLE_PORT);
+
+  private final AutonomousSubsystem m_autonomousSubysystem = new AutonomousSubsystem(m_consoleAuto, this);
+
+  static boolean m_runAutoConsole;
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -56,11 +68,46 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_driverController, Button.kR1.value)
+    //new JoystickButton(m_driverController, Button.kR1.value)
+    m_driverController.x()
         .whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
             m_robotDrive));
+
+    runAutoConsoleFalse();
+    //new Trigger(DriverStation::isDisabled)
+    //new Trigger(RobotModeTriggers.disabled())
+    new Trigger(trgAutoSelect())
+      .whileTrue(m_autonomousSubysystem.cmdAutoSelect());
+    runAutoConsoleTrue();
+
+    //THIS DOES NOT WORK //
+    new Trigger(RobotModeTriggers.disabled())
+      .onTrue(Commands.runOnce(this::runAutoConsoleTrue))
+      ;
+    // WHY NOT??????
+
+    new Trigger(RobotModeTriggers.disabled())
+    .onFalse(Commands.runOnce(this::runAutoConsoleFalse))
+    ;
   }
+
+  
+  private static Trigger trgAutoSelect() {
+    //System.out.println("bool auto console" + m_runAutoConsole);
+    return new Trigger(() -> m_runAutoConsole);
+  }
+
+  private void runAutoConsoleTrue() {
+    m_runAutoConsole = true;
+    System.out.println("true " + m_runAutoConsole);
+  }
+
+  private void runAutoConsoleFalse() {
+    m_runAutoConsole = false;
+    System.out.println("false " + m_runAutoConsole);
+  }
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -68,6 +115,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return null;
+    return m_autonomousSubysystem.cmdAutoControl();
+//    return null;
   }
 }
