@@ -139,7 +139,9 @@ public class AutonomousSubsystem extends SubsystemBase{
  * Second dimension is the sequence of the possible step(s) for the pattern
  */
     m_cmdSteps = new AutonomousSteps[][] {
+      //WALLDRIVE
           {AutonomousSteps.WAITLOOP, AutonomousSteps.DRV_STRT_1},
+      //SPEAKERCENTER
           {AutonomousSteps.WAITLOOP, 
             AutonomousSteps.SHOOTNOTE, 
             AutonomousSteps.DRV_INTK_1, 
@@ -148,6 +150,14 @@ public class AutonomousSubsystem extends SubsystemBase{
             AutonomousSteps.SHOOTNOTE,
             AutonomousSteps.DRV_INTK_2,
             AutonomousSteps.DRV_STRT_2
+          },
+      //SPEAKERLEFT
+          {AutonomousSteps.WAITLOOP,
+            AutonomousSteps.SHOOTNOTE
+          },
+      //SPEAKERRIGHT
+          {AutonomousSteps.WAITLOOP,
+            AutonomousSteps.SHOOTNOTE
           }
     };
 
