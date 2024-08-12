@@ -37,15 +37,6 @@ import frc.utils.SwerveUtils;
 
 public class DriveSubsystem extends SubsystemBase {
 
-    /*
-     * path name enumerator 
-     * must match with names generated in PathPlanner tool
-     */
-    public enum DrivePaths {
-        SPKR_CNTR_1_OUT,
-        SPKR_CNTR_1_RTRN;
-    }
-
     // Create MAXSwerveModules
     private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
             DriveConstants.kFrontLeftDrivingCanId,
@@ -312,9 +303,9 @@ public class DriveSubsystem extends SubsystemBase {
      * 8/11/2024 tro
      */
 
-    public Command getPathStep(DrivePaths pathName) {
+    public Command getPathStep(String pathName) {
         // Load the path you want to follow using its name in the GUI
-        PathPlannerPath path = PathPlannerPath.fromPathFile(pathName.toString());
+        PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
 
         // Create a path following command using AutoBuilder. This will also trigger event markers.
         return AutoBuilder.followPath(path);

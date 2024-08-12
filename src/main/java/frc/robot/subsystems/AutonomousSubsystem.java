@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.libraries.ConsoleAuto;
-import frc.robot.subsystems.DriveSubsystem.DrivePaths;
 //import frc.robot.Libraries.StepState;
 
 //There is a 95% chance that it will crash if you try to run auto so dont
@@ -37,34 +36,57 @@ public class AutonomousSubsystem extends SubsystemBase{
   }
 
   public enum AutonomousSteps {
-    WAIT1(),
-    WAIT2(),
-    WAITLOOP(),
-    SHOOTNOTE(1),
-    DRV_INTK_1(2),
-    DRV_STRT_1(3,2),
-    DRV_BACK_1(4),
-    DRV_INTK_2(5),
-    DRV_STRT_2(6,5),
-    END()
+    WAIT1('W', 1.0),
+    WAIT2('W', 2.0),
+    WAITLOOP('W', 99),
+    SHOOTNOTE('S', 0.0, 1),
+    DRV_INTK_1('I', 0.5, 2),
+    DRV_STRT_1('D', 0.0, 3, 2),
+    DRV_BACK_1('D', 0.0, 4),
+    DRV_INTK_2('I', 0.0, 5),
+    DRV_STRT_2('D', 0.0, 6, 5),
+    END('E')
     ;
 
+    private final char m_stepStruct;
+    private final double m_waitTime;
     private final int m_iSwATrue;
     private final int m_iSwBFalse;
 
-    private AutonomousSteps(int iSwATrue, int iSwBFalse) {
+    private AutonomousSteps(char cStepStruct, double dWaitTime, int iSwATrue, int iSwBFalse) {
+      this.m_stepStruct = cStepStruct;
+      this.m_waitTime = dWaitTime;
       this.m_iSwATrue = iSwATrue;
       this.m_iSwBFalse = iSwBFalse;
     }
 
-    private AutonomousSteps(int iSwATrue) {
+    private AutonomousSteps(char cStepStruct, double dWaitTime, int iSwATrue) {
+      this.m_stepStruct = cStepStruct;
+      this.m_waitTime = dWaitTime;
       this.m_iSwATrue = iSwATrue;
       this.m_iSwBFalse = 0;
     }
 
-    private AutonomousSteps() {
+    private AutonomousSteps(char cStepStruct, double dWaitTime) {
+      this.m_stepStruct = cStepStruct;
+      this.m_waitTime = dWaitTime;
       this.m_iSwATrue = 0;
       this.m_iSwBFalse = 0;
+    }
+    
+    private AutonomousSteps(char cStepStruct) {
+      this.m_stepStruct = cStepStruct;
+      this.m_waitTime = 0;
+      this.m_iSwATrue = 0;
+      this.m_iSwBFalse = 0;
+    }
+
+    public char getStepStruc() {
+      return m_stepStruct;
+    }
+
+    public double getWaitTIme() {
+      return m_waitTime;
     }
 
     public int getASwitch() {
@@ -301,22 +323,22 @@ public class AutonomousSubsystem extends SubsystemBase{
     return autoCmd;
    
   }
-
   private Command getAutoCmd(AutonomousSteps autoStep) {
 
     Command workCmd = Commands.print("command not found for " + autoStep.name());
-    switch (autoStep) {
-      case WAIT1:
-        workCmd = getWaitCommand(1);
+    switch (autoStep.getStepStruc()) {
+      case 'W':
+        double waitTime = autoStep.getWaitTIme();
+        workCmd = getWaitCommand(waitTime == 99 ? waitTime : m_ConsoleAuto.getROT_SW_1());
         break;
-      case WAIT2:
+      case 'D':
+        workCmd =  m_robotContainer.getDrivePathCommand(autoStep.toString());
+        break;
+      case 'I':
+        workCmd =  m_robotContainer.getIntakePathCommand(autoStep.toString(), autoStep.getWaitTIme());
+        break;
+      case 'S':
         workCmd = getWaitCommand(2);
-        break;
-      case WAITLOOP:
-        workCmd = getWaitCommand(m_iWaitCount);
-        break;
-      case DRV_STRT_1:
-        workCmd = m_robotContainer.getDrivePathCommand(DrivePaths.SPKR_CNTR_1_OUT);
         break;
       default:
         break;

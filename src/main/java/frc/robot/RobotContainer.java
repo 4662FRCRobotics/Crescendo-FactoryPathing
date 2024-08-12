@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.OIConstants;
 import frc.robot.libraries.ConsoleAuto;
 import frc.robot.subsystems.AutonomousSubsystem;
@@ -119,7 +118,11 @@ public class RobotContainer {
 //    return null;
   }
 
-  public Command getDrivePathCommand(DriveSubsystem.DrivePaths pathName) {
+  public Command getDrivePathCommand(String pathName) {
+    return m_robotDrive.getPathStep(pathName);
+  }
+  
+  public Command getIntakePathCommand(String pathName, double dWaitTime) {
     return m_robotDrive.getPathStep(pathName);
   }
 }
