@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.lang.annotation.Target;
 import java.util.Optional;
 
+import com.fasterxml.jackson.core.sym.Name;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -14,6 +15,7 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
@@ -27,12 +29,23 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
 
 public class DriveSubsystem extends SubsystemBase {
+
+    /*
+     * path name enumerator 
+     * must match with names generated in PathPlanner tool
+     */
+    public enum DrivePaths {
+        SPKR_CNTR_1_OUT,
+        SPKR_CNTR_1_RTRN;
+    }
+
     // Create MAXSwerveModules
     private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
             DriveConstants.kFrontLeftDrivingCanId,
@@ -292,5 +305,18 @@ public class DriveSubsystem extends SubsystemBase {
     //@AutoLogOutput(key = "Chassis/Heading")
     private Rotation2d getHeading() {
         return Rotation2d.fromDegrees(m_gyro.getAngle() * (DriveConstants.kGyroReversed ? -1.0 : 1.0));
+    }
+    
+    /* 
+     * adding command for 4662 auto single path steps
+     * 8/11/2024 tro
+     */
+
+    public Command getPathStep(DrivePaths pathName) {
+        // Load the path you want to follow using its name in the GUI
+        PathPlannerPath path = PathPlannerPath.fromPathFile(pathName.toString());
+
+        // Create a path following command using AutoBuilder. This will also trigger event markers.
+        return AutoBuilder.followPath(path);
     }
 }

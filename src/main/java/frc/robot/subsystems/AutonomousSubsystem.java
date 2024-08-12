@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.libraries.ConsoleAuto;
+import frc.robot.subsystems.DriveSubsystem.DrivePaths;
 //import frc.robot.Libraries.StepState;
 
 //There is a 95% chance that it will crash if you try to run auto so dont
@@ -314,9 +315,9 @@ public class AutonomousSubsystem extends SubsystemBase{
       case WAITLOOP:
         workCmd = getWaitCommand(m_iWaitCount);
         break;
-      //case DRV_STRT_1:
-      //  workCmd = m_robotContainer.getDrivePath();
-      //  break;
+      case DRV_STRT_1:
+        workCmd = m_robotContainer.getDrivePathCommand(DrivePaths.SPKR_CNTR_1_OUT);
+        break;
       default:
         break;
     }
