@@ -38,8 +38,11 @@ public class AutonomousSubsystem extends SubsystemBase{
   public enum AutonomousSteps {
     WAIT1('W', 1.0),
     WAIT2('W', 2.0),
-    WAITLOOP('W', 99),
+    WAITLOOP('W', 99.9),
+    WALL_OUT('D', 0.0, 1),
     SHOOTNOTE('S', 0.0, 1),
+    SpkrCntrOut1('D', 0.0, 2),
+    SpkrCntrRtrn1('D', 0.0, 3),
     DRV_INTK_1('I', 0.5, 2),
     DRV_STRT_1('D', 0.0, 3, 2),
     DRV_BACK_1('D', 0.0, 4),
@@ -163,16 +166,13 @@ public class AutonomousSubsystem extends SubsystemBase{
  */
     m_cmdSteps = new AutonomousSteps[][] {
       //WALLDRIVE
-          {AutonomousSteps.WAITLOOP, AutonomousSteps.DRV_STRT_1},
+          {AutonomousSteps.WAITLOOP,
+           AutonomousSteps.WALL_OUT},
       //SPEAKERCENTER
           {AutonomousSteps.WAITLOOP, 
             AutonomousSteps.SHOOTNOTE, 
-            AutonomousSteps.DRV_INTK_1, 
-            AutonomousSteps.DRV_STRT_1,
-            AutonomousSteps.DRV_BACK_1,
-            AutonomousSteps.SHOOTNOTE,
-            AutonomousSteps.DRV_INTK_2,
-            AutonomousSteps.DRV_STRT_2
+            AutonomousSteps.SpkrCntrOut1, 
+            AutonomousSteps.SpkrCntrRtrn1
           },
       //SPEAKERLEFT
           {AutonomousSteps.WAITLOOP,
@@ -329,7 +329,7 @@ public class AutonomousSubsystem extends SubsystemBase{
     switch (autoStep.getStepStruc()) {
       case 'W':
         double waitTime = autoStep.getWaitTIme();
-        workCmd = getWaitCommand(waitTime == 99 ? waitTime : m_ConsoleAuto.getROT_SW_1());
+        workCmd = getWaitCommand(waitTime == 99.9 ? m_ConsoleAuto.getROT_SW_1() : waitTime);
         break;
       case 'D':
         workCmd =  m_robotContainer.getDrivePathCommand(autoStep.toString());
