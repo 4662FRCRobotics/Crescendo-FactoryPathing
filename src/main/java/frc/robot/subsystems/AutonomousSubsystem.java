@@ -172,6 +172,7 @@ public class AutonomousSubsystem extends SubsystemBase{
           {AutonomousSteps.WAITLOOP, 
             AutonomousSteps.SHOOTNOTE, 
             AutonomousSteps.SpkrCntrOut1, 
+            AutonomousSteps.WAIT1,
             AutonomousSteps.SpkrCntrRtrn1
           },
       //SPEAKERLEFT

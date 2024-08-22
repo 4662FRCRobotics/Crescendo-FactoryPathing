@@ -77,6 +77,8 @@ public class DriveSubsystem extends SubsystemBase {
             getModulePositions(),
             new Pose2d());
 
+    private boolean m_isFirstPath = true;
+
     /** Creates a new DriveSubsystem. */
     public DriveSubsystem() {
         AutoBuilder.configureHolonomic(
@@ -306,6 +308,13 @@ public class DriveSubsystem extends SubsystemBase {
     public Command getPathStep(String pathName) {
         // Load the path you want to follow using its name in the GUI
         PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+
+        // set starting position from first path
+        // needs to handle path.flip when drivestation is redalliance - this is blue only
+        if (m_isFirstPath) {
+            resetOdometry(path.getPreviewStartingHolonomicPose());
+            m_isFirstPath = false;
+        }
 
         // Create a path following command using AutoBuilder. This will also trigger event markers.
         return AutoBuilder.followPath(path);
