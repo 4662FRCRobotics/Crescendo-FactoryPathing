@@ -312,8 +312,19 @@ public class DriveSubsystem extends SubsystemBase {
         // set starting position from first path
         // needs to handle path.flip when drivestation is redalliance - this is blue only
         if (m_isFirstPath) {
-            resetOdometry(path.getPreviewStartingHolonomicPose());
-            m_isFirstPath = false;
+
+            var alliance = DriverStation.getAlliance();
+            if (alliance.isPresent()) {
+                if (alliance.get() == DriverStation.Alliance.Red) {
+                    resetOdometry(path.flipPath().getPreviewStartingHolonomicPose());
+                } else {
+                    resetOdometry(path.getPreviewStartingHolonomicPose());
+                }
+                m_isFirstPath = false;
+            }
+
+            //resetOdometry(path.getPreviewStartingHolonomicPose());
+            //m_isFirstPath = false;
         }
 
         // Create a path following command using AutoBuilder. This will also trigger event markers.
