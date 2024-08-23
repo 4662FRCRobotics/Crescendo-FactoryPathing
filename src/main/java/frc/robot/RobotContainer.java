@@ -90,12 +90,8 @@ public class RobotContainer {
 
     // intake note
     m_driverController.leftBumper()
-      .whileTrue(Commands.sequence(
-        m_noteIntakeSubsystem.cmdDeployIntakeEmpty(),
-        m_noteIntakeSubsystem.cmdIntakeNoteLim(),
-        m_noteIntakeSubsystem.cmdRetractIntakeLoaded()
-        )
-      );
+      .whileTrue(cmdIntakeNote());
+      
 
     runAutoConsoleFalse();
     //new Trigger(DriverStation::isDisabled)
@@ -163,6 +159,14 @@ public class RobotContainer {
                 Commands.sequence(Commands.waitSeconds(OIConstants.kINTAKE_FEED_DELAY),
                     m_noteIntakeSubsystem.cmdSpinnerEject()))
            );
+  }
+
+  public Command cmdIntakeNote() {
+    return (Commands.sequence(
+        m_noteIntakeSubsystem.cmdDeployIntakeEmpty(),
+        m_noteIntakeSubsystem.cmdIntakeNoteLim(),
+        m_noteIntakeSubsystem.cmdRetractIntakeLoaded()
+    ));
   }
 
 }
