@@ -339,7 +339,15 @@ public class AutonomousSubsystem extends SubsystemBase{
         workCmd =  m_robotContainer.getIntakePathCommand(autoStep.toString(), autoStep.getWaitTIme());
         break;
       case 'S':
-        workCmd = getWaitCommand(2);
+        //workCmd = getWaitCommand(2);
+        switch (autoStep) {
+          case SHOOTNOTE:
+            workCmd = m_robotContainer.cmdShootNote().withTimeout(2);
+            break;
+        
+          default:
+            break;
+        }
         break;
       default:
         break;
