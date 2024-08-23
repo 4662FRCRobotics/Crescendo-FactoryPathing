@@ -77,14 +77,25 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     //new JoystickButton(m_driverController, Button.kR1.value)
+
+    //set X on drive
     m_driverController.x()
         .whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
             m_robotDrive));
 
-    
+    // shoot note
     m_driverController.leftTrigger(OIConstants.kCONTROLLER_TRIGGER_THRESHOLD)
         .whileTrue(cmdShootNote());
+
+    // intake note
+    m_driverController.leftBumper()
+      .whileTrue(Commands.sequence(
+        m_noteIntakeSubsystem.cmdDeployIntakeEmpty(),
+        m_noteIntakeSubsystem.cmdIntakeNoteLim(),
+        m_noteIntakeSubsystem.cmdRetractIntakeLoaded()
+        )
+      );
 
     runAutoConsoleFalse();
     //new Trigger(DriverStation::isDisabled)

@@ -149,6 +149,7 @@ public final class Constants {
 
   }
 
+  // INTAKE subsystem 
   public static class IntakeConstants {
     
     public static final int kINTAKE_LIFT_MOTOR_ID = 20;
@@ -157,8 +158,13 @@ public final class Constants {
     public static final double kSPINNER_SPEED_EJECT = -0.9;
     public static final double kSPINNER_SPEED_INTAKE = 1.0;
     public static final double kSPINNER_SPEED_IDLE = 0;
+
+    public static final double kINTAKE_SPEED_DEPLOY = 0.7;
+    public static final double kINTAKE_SPEED_RETRACT = -0.6;
+    public static final double kINTAKE_SPEED_IDLE = 0.0;
   }
 
+  // AUTONOMOUS subsystem
   public static final class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond = 3;
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
