@@ -51,6 +51,9 @@ public class RobotContainer {
     configureButtonBindings();
 
     // Configure default commands
+    // CLIMBER - stop motors
+
+    // DRIVE - teleop xBox joysticks
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
@@ -61,7 +64,11 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
                 false, false),
             m_robotDrive));
+
+    // SHOOTER - idle motors
     m_noteShooterSubsystem.setDefaultCommand(m_noteShooterSubsystem.cmdShooterIdle());
+
+    // INTAKE - idle motors
     m_noteIntakeSubsystem.setDefaultCommand(m_noteIntakeSubsystem.cmdSpinnerIdle());
         
   }
@@ -78,20 +85,26 @@ public class RobotContainer {
   private void configureButtonBindings() {
     //new JoystickButton(m_driverController, Button.kR1.value)
 
-    //set X on drive
+    // (X) DRIVE set X
     m_driverController.x()
         .whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
             m_robotDrive));
 
-    // shoot note
+    // LEFT TRIGGER - Retract Intake and Shoot note
     m_driverController.leftTrigger(OIConstants.kCONTROLLER_TRIGGER_THRESHOLD)
         .whileTrue(cmdShootNote());
 
-    // intake note
+    // LEFT BUMPER intake note
     m_driverController.leftBumper()
       .whileTrue(cmdIntakeNote());
       
+    // (A) Intake Retract
+
+    // (Y) while true intake note (spinner) and shooter reverse (human player)
+    // (Y) on false holdNote and then stop shooter
+
+    // (B) while true drop note on false hold note
 
     runAutoConsoleFalse();
     //new Trigger(DriverStation::isDisabled)
