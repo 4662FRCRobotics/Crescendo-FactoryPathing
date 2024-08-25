@@ -75,18 +75,18 @@ public class NoteIntakeSubsystem extends SubsystemBase {
 
   public Command cmdSpinnerEject() {
     return Commands.runEnd(() -> setSpinnerSpeed(IntakeConstants.kSPINNER_SPEED_EJECT),
-     () -> setSpinnerSpeed(IntakeConstants.kSPINNER_SPEED_IDLE),
+     () -> setSpinnerSpeed(IntakeConstants.kSPINNER_SPEED_STOP),
      this);
   }
 
-  public Command cmdSpinnerIdle() {
-    return Commands.run(() -> setSpinnerSpeed(IntakeConstants.kSPINNER_SPEED_IDLE), this);
+  public Command cmdSpinnerStop() {
+    return Commands.run(() -> setSpinnerSpeed(IntakeConstants.kSPINNER_SPEED_STOP), this);
   }
 
   public Command cmdSpinnerIntake() {
     return Commands.run(() -> setSpinnerSpeed(IntakeConstants.kSPINNER_SPEED_INTAKE), this)
       .until(() -> isNoteIn())
-      .andThen(Commands.run(() -> setSpinnerSpeed(IntakeConstants.kSPINNER_SPEED_IDLE), this ));
+      .andThen(Commands.run(() -> setSpinnerSpeed(IntakeConstants.kSPINNER_SPEED_STOP), this ));
   }
 
   public Command cmdIntakeNoteLim() {
@@ -96,7 +96,8 @@ public class NoteIntakeSubsystem extends SubsystemBase {
 
   public Command cmdDeployIntake() {
     return Commands.run(() -> setIntakeSpeed(IntakeConstants.kINTAKE_SPEED_DEPLOY), this)
-    .until(() -> isIntakeExtended());
+    .until(() -> isIntakeExtended())
+    .andThen(Commands.run(() -> setIntakeSpeed(IntakeConstants.kINTAKE_SPEED_STOP), this));
   }
 
   public Command cmdDeployIntakeEmpty() {
@@ -106,7 +107,8 @@ public class NoteIntakeSubsystem extends SubsystemBase {
 
   public Command cmdRestractIntake() {
     return Commands.run(() -> setIntakeSpeed(IntakeConstants.kINTAKE_SPEED_RETRACT), this)
-    .until(() -> isIntakeRetracted());
+    .until(() -> isIntakeRetracted())
+    .andThen(Commands.run(() -> setIntakeSpeed(IntakeConstants.kINTAKE_SPEED_STOP), this));
   }
 
   public Command cmdRetractIntakeLoaded() {

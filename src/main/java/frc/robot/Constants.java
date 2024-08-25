@@ -157,11 +157,11 @@ public final class Constants {
     
     public static final double kSPINNER_SPEED_EJECT = -0.9;
     public static final double kSPINNER_SPEED_INTAKE = 1.0;
-    public static final double kSPINNER_SPEED_IDLE = 0;
+    public static final double kSPINNER_SPEED_STOP = 0;
 
     public static final double kINTAKE_SPEED_DEPLOY = 0.7;
     public static final double kINTAKE_SPEED_RETRACT = -0.6;
-    public static final double kINTAKE_SPEED_IDLE = 0.0;
+    public static final double kINTAKE_SPEED_STOP = 0.0;
   }
 
   // AUTONOMOUS subsystem

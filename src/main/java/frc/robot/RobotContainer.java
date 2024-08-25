@@ -69,7 +69,7 @@ public class RobotContainer {
     m_noteShooterSubsystem.setDefaultCommand(m_noteShooterSubsystem.cmdShooterIdle());
 
     // INTAKE - idle motors
-    m_noteIntakeSubsystem.setDefaultCommand(m_noteIntakeSubsystem.cmdSpinnerIdle());
+    //m_noteIntakeSubsystem.setDefaultCommand(m_noteIntakeSubsystem.cmdSpinnerStop());
         
   }
 
@@ -168,10 +168,13 @@ public class RobotContainer {
    * Available as public so it can be used by Autonomous
    */
   public Command cmdShootNote() {
-    return (Commands.parallel(m_noteShooterSubsystem.cmdShooterLaunch(),
+    return (Commands.sequence(
+      m_noteIntakeSubsystem.cmdRetractIntakeLoaded(),
+      Commands.parallel(m_noteShooterSubsystem.cmdShooterLaunch(),
                 Commands.sequence(Commands.waitSeconds(OIConstants.kINTAKE_FEED_DELAY),
                     m_noteIntakeSubsystem.cmdSpinnerEject()))
-           );
+      )
+    );
   }
 
   public Command cmdIntakeNote() {
