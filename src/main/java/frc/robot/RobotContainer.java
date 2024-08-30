@@ -66,7 +66,7 @@ public class RobotContainer {
             m_robotDrive));
 
     // SHOOTER - idle motors
-    m_noteShooterSubsystem.setDefaultCommand(m_noteShooterSubsystem.cmdShooterIdle());
+   // m_noteShooterSubsystem.setDefaultCommand(m_noteShooterSubsystem.cmdShooterIdle());
 
     // INTAKE - idle motors
     //m_noteIntakeSubsystem.setDefaultCommand(m_noteIntakeSubsystem.cmdSpinnerStop());
@@ -105,9 +105,10 @@ public class RobotContainer {
 
     // (Y) while true intake note (spinner) and shooter reverse (human player)
     m_driverController.y()
-      .whileTrue(Commands.parallel(m_noteShooterSubsystem.cmdShooterIntake(),
+      .whileTrue(Commands.sequence(m_noteIntakeSubsystem.cmdRetractIntake(),
+        Commands.parallel(m_noteShooterSubsystem.cmdShooterIntake(),
         m_noteIntakeSubsystem.cmdSpinnerTopIntake())
-      );
+      ));
     // (Y) on false holdNote and then stop shooter
 
     // (B) while true drop note on false hold note
