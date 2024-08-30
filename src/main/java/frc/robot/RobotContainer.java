@@ -97,14 +97,22 @@ public class RobotContainer {
 
     // LEFT BUMPER intake note
     m_driverController.leftBumper()
-      .whileTrue(cmdIntakeNote());
+      .whileTrue(cmdPickUpNote());
       
     // (A) Intake Retract
+    m_driverController.a()
+      .whileTrue(m_noteIntakeSubsystem.cmdRetractIntake());
 
     // (Y) while true intake note (spinner) and shooter reverse (human player)
+    m_driverController.y()
+      .whileTrue(Commands.parallel(m_noteShooterSubsystem.cmdShooterIntake(),
+        m_noteIntakeSubsystem.cmdSpinnerTopIntake())
+      );
     // (Y) on false holdNote and then stop shooter
 
     // (B) while true drop note on false hold note
+    m_driverController.b()
+      .whileTrue(m_noteIntakeSubsystem.cmdDropNote());
 
     runAutoConsoleFalse();
     //new Trigger(DriverStation::isDisabled)
@@ -169,7 +177,7 @@ public class RobotContainer {
    */
   public Command cmdShootNote() {
     return (Commands.sequence(
-      m_noteIntakeSubsystem.cmdRetractIntakeLoaded(),
+      m_noteIntakeSubsystem.cmdRetractIntake(),
       Commands.parallel(m_noteShooterSubsystem.cmdShooterLaunch(),
                 Commands.sequence(Commands.waitSeconds(OIConstants.kINTAKE_FEED_DELAY),
                     m_noteIntakeSubsystem.cmdSpinnerEject()))
@@ -177,12 +185,8 @@ public class RobotContainer {
     );
   }
 
-  public Command cmdIntakeNote() {
-    return (Commands.sequence(
-        m_noteIntakeSubsystem.cmdDeployIntakeEmpty(),
-        m_noteIntakeSubsystem.cmdIntakeNoteLim(),
-        m_noteIntakeSubsystem.cmdRetractIntakeLoaded()
-    ));
+  public Command cmdPickUpNote() {
+    return m_noteIntakeSubsystem.cmdPickUpNote();
   }
 
 }

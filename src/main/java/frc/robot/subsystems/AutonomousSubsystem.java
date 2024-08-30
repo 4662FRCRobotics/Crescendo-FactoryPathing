@@ -301,7 +301,7 @@ public class AutonomousSubsystem extends SubsystemBase{
    * This should be handled by a trigger that is started on Disabled status
    */
   public Command cmdAutoSelect() {
-    return Commands.run(this::selectAutoCommand)
+    return Commands.run(this::selectAutoCommand, this)
           .ignoringDisable(true);
   }
 

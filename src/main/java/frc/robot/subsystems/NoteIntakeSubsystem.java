@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.IntakeConstants;
@@ -79,41 +80,71 @@ public class NoteIntakeSubsystem extends SubsystemBase {
      this);
   }
 
-  public Command cmdSpinnerStop() {
-    return Commands.run(() -> setSpinnerSpeed(IntakeConstants.kSPINNER_SPEED_STOP), this);
-  }
+  //public Command cmdSpinnerStop() {
+  //  return Commands.run(() -> setSpinnerSpeed(IntakeConstants.kSPINNER_SPEED_STOP), this);
+  //}
 
   public Command cmdSpinnerIntake() {
-    return Commands.run(() -> setSpinnerSpeed(IntakeConstants.kSPINNER_SPEED_INTAKE), this)
-      .until(() -> isNoteIn())
-      .andThen(Commands.run(() -> setSpinnerSpeed(IntakeConstants.kSPINNER_SPEED_STOP), this ));
+    return new FunctionalCommand(
+      () -> setSpinnerSpeed(IntakeConstants.kSPINNER_SPEED_INTAKE),
+      () -> {} ,
+      (interrupted) -> setSpinnerSpeed(IntakeConstants.kSPINNER_SPEED_STOP),
+      () -> isNoteIn(),
+      this
+    );
   }
 
-  public Command cmdIntakeNoteLim() {
-    return cmdSpinnerIntake()
-    .unless(() -> isNoteIn());
+  public Command cmdSpinnerTopIntake() {
+    return new FunctionalCommand(
+      () -> setSpinnerSpeed(IntakeConstants.kSPINNER_SPEED_TOP_INTAKE),
+      () -> {} ,
+      (interrupted) -> setSpinnerSpeed(IntakeConstants.kSPINNER_SPEED_STOP),
+      () -> isNoteIn(),
+      this
+    );
   }
 
   public Command cmdDeployIntake() {
-    return Commands.run(() -> setIntakeSpeed(IntakeConstants.kINTAKE_SPEED_DEPLOY), this)
-    .until(() -> isIntakeExtended())
-    .andThen(Commands.run(() -> setIntakeSpeed(IntakeConstants.kINTAKE_SPEED_STOP), this));
+    return new FunctionalCommand(
+      () -> setIntakeSpeed(IntakeConstants.kINTAKE_SPEED_DEPLOY),
+      () -> {} ,
+      (interrupted) -> setIntakeSpeed(IntakeConstants.kINTAKE_SPEED_STOP),
+      () -> isIntakeExtended(),
+      this
+    );
   }
 
-  public Command cmdDeployIntakeEmpty() {
+  public Command cmdRetractIntake() {
+    return new FunctionalCommand(
+      () -> setIntakeSpeed(IntakeConstants.kINTAKE_SPEED_RETRACT),
+      () -> {} ,
+      (interrupted) -> setIntakeSpeed(IntakeConstants.kINTAKE_SPEED_STOP),
+      () -> isIntakeRetracted(),
+      this
+    );
+  }
+
+  /* cmdPickUpNote
+   * command to pick up a note from the floor
+   * combines deploy, spin, and retract into one set based on internal states
+   * deploy - only if intake is empty and not extended
+   * spin - while intake is empty
+   * retract - just do it if you got this far
+   */
+  public Command cmdPickUpNote() {
     return cmdDeployIntake()
-    .unless(() -> isNoteIn() | isIntakeExtended());
+        .unless(() -> isNoteIn() | isIntakeExtended())
+        .andThen(cmdSpinnerIntake()
+          .unless(() -> isNoteIn()))
+        .andThen(cmdRetractIntake())
+    ;
   }
 
-  public Command cmdRestractIntake() {
-    return Commands.run(() -> setIntakeSpeed(IntakeConstants.kINTAKE_SPEED_RETRACT), this)
-    .until(() -> isIntakeRetracted())
-    .andThen(Commands.run(() -> setIntakeSpeed(IntakeConstants.kINTAKE_SPEED_STOP), this));
-  }
-
-  public Command cmdRetractIntakeLoaded() {
-    return cmdRestractIntake()
-    .onlyIf(() -> isNoteIn());
+  public Command cmdDropNote() {
+    return cmdDeployIntake()
+      .unless(() -> isIntakeExtended())
+      .andThen(cmdSpinnerEject())
+    ;
   }
   
 }
