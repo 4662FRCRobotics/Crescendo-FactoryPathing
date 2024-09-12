@@ -37,6 +37,8 @@ public class NoteIntakeSubsystem extends SubsystemBase {
 
     m_motorIntakeSpinner = new CANSparkMax(IntakeConstants.kINTAKE_SPIN_MOTOR_ID, MotorType.kBrushless);
     m_motorIntakeLift = new CANSparkMax(IntakeConstants.kINTAKE_LIFT_MOTOR_ID, MotorType.kBrushless);
+    m_motorIntakeLift.restoreFactoryDefaults();
+    m_motorIntakeSpinner.restoreFactoryDefaults();
     m_motorIntakeSpinner.setIdleMode(IdleMode.kBrake);
     m_motorIntakeLift.setIdleMode(IdleMode.kBrake);
 

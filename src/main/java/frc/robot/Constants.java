@@ -161,8 +161,8 @@ public final class Constants {
     public static final double kSPINNER_SPEED_TOP_INTAKE = 0.5;
     public static final double kSPINNER_SPEED_STOP = 0;
 
-    public static final double kINTAKE_SPEED_DEPLOY = 0.3;
-    public static final double kINTAKE_SPEED_RETRACT = -0.3;
+    public static final double kINTAKE_SPEED_DEPLOY = -0.3;
+    public static final double kINTAKE_SPEED_RETRACT = 0.3;
     public static final double kINTAKE_SPEED_STOP = 0.0;
   }
 
