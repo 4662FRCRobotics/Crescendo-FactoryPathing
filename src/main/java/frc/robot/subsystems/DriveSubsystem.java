@@ -161,6 +161,11 @@ public class DriveSubsystem extends SubsystemBase {
      * @param rateLimit     Whether to enable rate limiting for smoother control.
      */
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
+
+        xSpeed = squareAxis(xSpeed);
+        ySpeed = squareAxis(ySpeed);
+        rot = squareAxis(rot);
+        
         double xSpeedCommanded;
         double ySpeedCommanded;
 
@@ -224,6 +229,10 @@ public class DriveSubsystem extends SubsystemBase {
         }
 
         drive(new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered), fieldRelative);
+    }
+
+    private double squareAxis(double axis) {
+        return Math.copySign(axis * axis, axis);
     }
 
     private void driveRobotRelative(ChassisSpeeds speeds) {
