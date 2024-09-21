@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import java.lang.annotation.Target;
 import java.util.Optional;
 
+import org.photonvision.PhotonCamera;
+
 import com.fasterxml.jackson.core.sym.Name;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -109,6 +111,9 @@ public class DriveSubsystem extends SubsystemBase {
                 this // Reference to this subsystem to set requirements
         );
         //PathPlannerLogging.setLogCurrentPoseCallback(pose -> Logger.recordOutput("Chassis/targetPose",pose));
+
+        PhotonCamera m_driverCamera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
+        m_driverCamera.setDriverMode(true);
     }
 
     @Override
