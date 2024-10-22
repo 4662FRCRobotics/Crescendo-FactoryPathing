@@ -130,8 +130,43 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
     public static final double kDriveDeadband = 0.08;
     public static final int kAUTONOMOUS_CONSOLE_PORT = 1;
+
+    public static final double kCONTROLLER_TRIGGER_THRESHOLD = 0.75;
+    public static final double kINTAKE_FEED_DELAY = 0.8;
+
   }
 
+  public static class ShooterConstants {
+
+    public static final int kSHOOTER_LEFT_MOTOR_ID = 10;
+    public static final int kSHOOTER_RIGHT_MOTOR_ID = 11;
+
+    public static final boolean kIS_SHOOTER_INVERTED = false;
+    public static final int kSHOOTER_CURRENT_LIMIT = 40;
+
+    public static final double kSHOOT_SPEED_IDLE = 0;
+    public static final double kSHOOT_SPEED_LAUNCH = 0.9;
+    public static final double kSHOOT_SPEED_INTAKE = -0.3;
+
+  }
+
+  // INTAKE subsystem 
+  public static class IntakeConstants {
+    
+    public static final int kINTAKE_LIFT_MOTOR_ID = 20;
+    public static final int kINTAKE_SPIN_MOTOR_ID = 21;
+    
+    public static final double kSPINNER_SPEED_EJECT = -0.9;
+    public static final double kSPINNER_SPEED_INTAKE = 1.0;
+    public static final double kSPINNER_SPEED_TOP_INTAKE = 0.5;
+    public static final double kSPINNER_SPEED_STOP = 0;
+
+    public static final double kINTAKE_SPEED_DEPLOY = 0.3;
+    public static final double kINTAKE_SPEED_RETRACT = -0.3;
+    public static final double kINTAKE_SPEED_STOP = 0.0;
+  }
+
+  // AUTONOMOUS subsystem
   public static final class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond = 3;
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;

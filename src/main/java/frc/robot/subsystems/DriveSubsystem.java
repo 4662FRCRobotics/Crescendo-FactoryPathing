@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import java.lang.annotation.Target;
 import java.util.Optional;
 
+import org.photonvision.PhotonCamera;
+
 import com.fasterxml.jackson.core.sym.Name;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -109,6 +111,9 @@ public class DriveSubsystem extends SubsystemBase {
                 this // Reference to this subsystem to set requirements
         );
         //PathPlannerLogging.setLogCurrentPoseCallback(pose -> Logger.recordOutput("Chassis/targetPose",pose));
+
+        PhotonCamera m_driverCamera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
+        m_driverCamera.setDriverMode(true);
     }
 
     @Override
@@ -156,6 +161,11 @@ public class DriveSubsystem extends SubsystemBase {
      * @param rateLimit     Whether to enable rate limiting for smoother control.
      */
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
+
+        xSpeed = squareAxis(xSpeed);
+        ySpeed = squareAxis(ySpeed);
+        rot = squareAxis(rot);
+        
         double xSpeedCommanded;
         double ySpeedCommanded;
 
@@ -219,6 +229,10 @@ public class DriveSubsystem extends SubsystemBase {
         }
 
         drive(new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered), fieldRelative);
+    }
+
+    private double squareAxis(double axis) {
+        return Math.copySign(axis * axis, axis);
     }
 
     private void driveRobotRelative(ChassisSpeeds speeds) {

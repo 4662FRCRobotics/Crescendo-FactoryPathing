@@ -10,6 +10,8 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.libraries.ConsoleAuto;
 import frc.robot.subsystems.AutonomousSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.NoteIntakeSubsystem;
+import frc.robot.subsystems.NoteShooterSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -27,6 +29,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final NoteShooterSubsystem m_noteShooterSubsystem = new NoteShooterSubsystem();
+  private final NoteIntakeSubsystem m_noteIntakeSubsystem = new NoteIntakeSubsystem();
+
+
 
   // The driver's controller
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -45,6 +51,9 @@ public class RobotContainer {
     configureButtonBindings();
 
     // Configure default commands
+    // CLIMBER - stop motors
+
+    // DRIVE - teleop xBox joysticks
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
@@ -55,6 +64,13 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
                 false, false),
             m_robotDrive));
+
+    // SHOOTER - idle motors
+   // m_noteShooterSubsystem.setDefaultCommand(m_noteShooterSubsystem.cmdShooterIdle());
+
+    // INTAKE - idle motors
+    //m_noteIntakeSubsystem.setDefaultCommand(m_noteIntakeSubsystem.cmdSpinnerStop());
+        
   }
 
   /**
@@ -68,10 +84,36 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     //new JoystickButton(m_driverController, Button.kR1.value)
+
+    // (X) DRIVE set X
     m_driverController.x()
         .whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
             m_robotDrive));
+
+    // LEFT TRIGGER - Retract Intake and Shoot note
+    m_driverController.leftTrigger(OIConstants.kCONTROLLER_TRIGGER_THRESHOLD)
+        .whileTrue(cmdShootNote());
+
+    // LEFT BUMPER intake note
+    m_driverController.leftBumper()
+      .whileTrue(cmdPickUpNote());
+      
+    // (A) Intake Retract
+    m_driverController.a()
+      .whileTrue(m_noteIntakeSubsystem.cmdRetractIntake());
+
+    // (Y) while true intake note (spinner) and shooter reverse (human player)
+    m_driverController.y()
+      .whileTrue(Commands.sequence(m_noteIntakeSubsystem.cmdRetractIntake(),
+        Commands.parallel(m_noteShooterSubsystem.cmdShooterIntake(),
+        m_noteIntakeSubsystem.cmdSpinnerTopIntake())
+      ));
+    // (Y) on false holdNote and then stop shooter
+
+    // (B) while true drop note on false hold note
+    m_driverController.b()
+      .whileTrue(m_noteIntakeSubsystem.cmdDropNote());
 
     runAutoConsoleFalse();
     //new Trigger(DriverStation::isDisabled)
@@ -125,4 +167,27 @@ public class RobotContainer {
   public Command getIntakePathCommand(String pathName, double dWaitTime) {
     return m_robotDrive.getPathStep(pathName);
   }
+
+  /*
+   * Command to shoot the NOTE
+   * Parallel command to spin up the Shooter
+   * with Wait period to allow shooter to come to speed (could be a wait until on shooter RPM true)
+   * followed by Intake feeding out the NOTE
+   * 
+   * Available as public so it can be used by Autonomous
+   */
+  public Command cmdShootNote() {
+    return (Commands.sequence(
+      m_noteIntakeSubsystem.cmdRetractIntake(),
+      Commands.parallel(m_noteShooterSubsystem.cmdShooterLaunch(),
+                Commands.sequence(Commands.waitSeconds(OIConstants.kINTAKE_FEED_DELAY),
+                    m_noteIntakeSubsystem.cmdSpinnerEject()))
+      )
+    );
+  }
+
+  public Command cmdPickUpNote() {
+    return m_noteIntakeSubsystem.cmdPickUpNote();
+  }
+
 }
