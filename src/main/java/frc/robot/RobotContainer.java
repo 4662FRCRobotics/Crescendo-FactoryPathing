@@ -122,11 +122,10 @@ public class RobotContainer {
       .whileTrue(m_autonomousSubysystem.cmdAutoSelect());
     runAutoConsoleTrue();
 
-    //THIS DOES NOT WORK //
     new Trigger(RobotModeTriggers.disabled())
-      .onTrue(Commands.runOnce(this::runAutoConsoleTrue))
+      .onTrue(Commands.runOnce(this::runAutoConsoleTrue)
+        .ignoringDisable(true))
       ;
-    // WHY NOT??????
 
     new Trigger(RobotModeTriggers.disabled())
     .onFalse(Commands.runOnce(this::runAutoConsoleFalse))
